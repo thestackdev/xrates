@@ -1,0 +1,20 @@
+kind: pipeline
+type: exec
+name: default
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+  - name: deploy
+    environment:
+      EXCHANGE_RATES_TOKEN:
+        from_secret: EXCHANGE_RATES_TOKEN
+      EXCHANGE_RATES_BASE_URL:
+        from_secret: EXCHANGE_RATES_BASE_URL
+    commands:
+      - echo EXCHANGE_RATES_TOKEN=$EXCHANGE_RATES_TOKEN > .env
+      - echo EXCHANGE_RATES_BASE_URL=$EXCHANGE_RATES_BASE_URL >> .env
+      - docker compose up -d --build --force-recreate
+      - docker system prune -f -a
