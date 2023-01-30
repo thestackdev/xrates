@@ -7,15 +7,15 @@ platform:
   arch: arm64
 
 steps:
-  - name: build and push
-    image: plugins/docker
-    settings:
-      username:
-        from_secret: DOCKER_USERNAME
-      password:
-        from_secret: DOCKER_PASSWORD
-      repo: fullstacklab/xrates
-      tags: latest
+  # - name: build and push
+  #   image: plugins/docker
+  #   settings:
+  #     username:
+  #       from_secret: DOCKER_USERNAME
+  #     password:
+  #       from_secret: DOCKER_PASSWORD
+  #     repo: fullstacklab/xrates
+  #     tags: latest
 
   - name: deploy
     image: docker

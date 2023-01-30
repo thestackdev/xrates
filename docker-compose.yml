@@ -5,8 +5,6 @@ services:
     restart: unless-stopped
     build: .
     network_mode: traefik
-    env_file:
-      - .env
     labels:
       traefik.enable: true
       traefik.http.services.xrates.loadbalancer.server.port: 3000
