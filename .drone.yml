@@ -7,27 +7,18 @@ platform:
   arch: arm64
 
 steps:
-  # - name: build and push
-  #   image: plugins/docker
-  #   settings:
-  #     username:
-  #       from_secret: DOCKER_USERNAME
-  #     password:
-  #       from_secret: DOCKER_PASSWORD
-  #     repo: fullstacklab/xrates
-  #     tags: latest
-
   - name: deploy
     image: docker
     environment:
-      EXCHANGE_RATES_TOKEN:
-        from_secret: EXCHANGE_RATES_TOKEN
       EXCHANGE_RATES_BASE_URL:
         from_secret: EXCHANGE_RATES_BASE_URL
+      EXCHANGE_RATES_TOKEN:
+        from_secret: EXCHANGE_RATES_TOKEN
     volumes:
       - name: docker_sock
         path: /var/run/docker.sock
     commands:
+      - docker compose build
       - docker compose up -d --force-recreate
 
 volumes:

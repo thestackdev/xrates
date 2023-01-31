@@ -3,8 +3,10 @@ services:
     image: fullstacklab/xrates
     container_name: xrates
     restart: unless-stopped
-    build: .
     network_mode: traefik
+    environment:
+      - EXCHANGE_RATES_BASE_URL=${EXCHANGE_RATES_BASE_URL}
+      - EXCHANGE_RATES_TOKEN=${EXCHANGE_RATES_TOKEN}
     labels:
       traefik.enable: true
       traefik.http.services.xrates.loadbalancer.server.port: 3000
