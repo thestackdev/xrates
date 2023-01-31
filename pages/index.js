@@ -1,6 +1,17 @@
-import { exchangeRates, inputValue, selectedCurrency } from 'signals/state'
+import { useEffect } from 'react'
+import {
+  exchangeRates,
+  filterExchangeRates,
+  inputValue,
+  selectedCurrency,
+} from 'signals/state'
 
-export default function () {
+export default function ({ rates }) {
+  useEffect(() => {
+    exchangeRates.value = rates
+    filterExchangeRates.value = rates
+  }, [])
+
   const handleChange = (e, type) => {
     if (e === '') {
       inputValue.value = { to: '', from: '' }
@@ -137,4 +148,27 @@ export default function () {
       </div>
     </div>
   )
+}
+
+export async function getStaticProps() {
+  const response = { rates: null, symbols: null }
+  const exchangeRates = `${process.env.EXCHANGE_RATES_BASE_URL}/latest?apikey=${process.env.EXCHANGE_RATES_TOKEN}`
+  const exchangeSymbols = `${process.env.EXCHANGE_RATES_BASE_URL}/symbols?apikey=${process.env.EXCHANGE_RATES_TOKEN}`
+
+  const exchangeResponse = await fetch(exchangeRates).then((res) => res.json())
+  response.rates = exchangeResponse.rates
+
+  const symbolResponse = await fetch(exchangeSymbols).then((res) => res.json())
+  response.symbols = symbolResponse.symbols
+
+  const rates = Object.keys(response.symbols).map((e) => ({
+    symbol: e,
+    name: response.symbols[e],
+    exchageRate: response.rates[e],
+  }))
+
+  return {
+    props: { rates },
+    revalidate: 1000 * 60 * 60 * 6,
+  }
 }
