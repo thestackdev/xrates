@@ -1,4 +1,9 @@
-import { useEffect } from 'react'
+import {
+  ArrowsRightLeftIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/24/outline'
+import CurrencyModal from 'components/CurrencyModal'
+import { useEffect, useState } from 'react'
 import {
   exchangeRates,
   filterExchangeRates,
@@ -7,6 +12,9 @@ import {
 } from 'signals/state'
 
 export default function ({ rates }) {
+  const [currencyModalFrom, setCurrencyModalFrom] = useState(false)
+  const [currencyModalTo, setCurrencyModalTo] = useState(false)
+
   useEffect(() => {
     exchangeRates.value = rates
     filterExchangeRates.value = rates
@@ -46,37 +54,30 @@ export default function ({ rates }) {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row w-full justify-evenly md:w-2/3 mx-auto items-center h-[calc(100vh-50px)]">
-      <div className="flex flex-row items-center">
-        <div className="group inline-block relative">
-          <button className="text-gray-700 dark:text-white font-semibold py-2 px-4 inline-flex items-center">
-            <span className="mr-1 mt-3 md:mt-14 text-4xl h-[50px] md:h-[100px] md:text-5xl">
-              {selectedCurrency.value.from}
-            </span>
-            <svg
-              className="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
+    <div className="flex flex-col items-center sm:flex-row w-full justify-evenly md:w-2/3 mx-auto">
+      <div className="flex flex-row">
+        <CurrencyModal
+          visible={currencyModalFrom}
+          exchangeRates={exchangeRates}
+          closeModal={() => setCurrencyModalFrom(false)}
+          handleClick={(e) => {
+            selectedCurrency.value = {
+              ...selectedCurrency.value,
+              from: e.target.innerHTML,
+            }
+            setCurrencyModalFrom(false)
+            inputValue.value = { to: '', from: '' }
+          }}
+        />
+        <div className="group">
+          <button
+            className="text-white focus:outline-none font-medium rounded-lg text-center inline-flex items-center dark:hover:bg-gray-700 px-2 text-4xl h-[50px] md:h-[100px] md:text-5xl relative"
+            type="button"
+            onClick={() => setCurrencyModalFrom(true)}
+          >
+            {selectedCurrency.value.from}
+            <ChevronDownIcon className="w-4 h-4 ml-2" />
           </button>
-          <ul className="absolute hidden text-gray-700 pt-1 group-hover:block w-full h-[30vh] overflow-y-scroll">
-            {exchangeRates.value.map((e, index) => (
-              <li
-                key={index}
-                onClick={(e) => {
-                  selectedCurrency.value = {
-                    ...selectedCurrency.value,
-                    from: e.target.innerHTML,
-                  }
-                }}
-                className="dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-              >
-                {e.symbol}
-              </li>
-            ))}
-          </ul>
         </div>
         <input
           type="number"
@@ -89,51 +90,30 @@ export default function ({ rates }) {
           required
         />
       </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-10 h-10 stroke-gray-900 dark:stroke-white"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+      <ArrowsRightLeftIcon className="w-10 h-10 mx-4 stroke-gray-900 dark:stroke-white" />
+      <div className="flex flex-row">
+        <CurrencyModal
+          visible={currencyModalTo}
+          exchangeRates={exchangeRates}
+          closeModal={() => setCurrencyModalTo(false)}
+          handleClick={(e) => {
+            selectedCurrency.value = {
+              ...selectedCurrency.value,
+              to: e.target.innerHTML,
+            }
+            setCurrencyModalTo(false)
+            inputValue.value = { to: '', from: '' }
+          }}
         />
-      </svg>
-
-      <div className="flex flex-row items-center">
-        <div className="group inline-block relative">
-          <button className="text-gray-700 dark:text-white font-semibold py-2 px-4 inline-flex items-center">
-            <span className="mr-1 mt-3 md:mt-14 text-4xl h-[50px] md:h-[100px] md:text-5xl">
-              {selectedCurrency.value.to}
-            </span>
-            <svg
-              className="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
+        <div className="group">
+          <button
+            className="text-white focus:outline-none font-medium rounded-lg text-center inline-flex items-center dark:hover:bg-gray-700 px-2 text-4xl h-[50px] md:h-[100px] md:text-5xl relative"
+            type="button"
+            onClick={() => setCurrencyModalTo(true)}
+          >
+            {selectedCurrency.value.to}
+            <ChevronDownIcon className="w-4 h-4 ml-2" />
           </button>
-          <ul className="absolute hidden text-gray-700 pt-1 group-hover:block w-full h-[30vh] overflow-y-scroll">
-            {exchangeRates.value.map((e, index) => (
-              <li
-                key={index}
-                onClick={(e) => {
-                  selectedCurrency.value = {
-                    ...selectedCurrency.value,
-                    to: e.target.innerHTML,
-                  }
-                }}
-                className="dark:bg-gray-700 dark:hover:bg-gray-500 dark:text-white bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-              >
-                {e.symbol}
-              </li>
-            ))}
-          </ul>
         </div>
         <input
           type="number"
@@ -141,9 +121,9 @@ export default function ({ rates }) {
           className="block p-4 h-[50px] md:h-[100px] text-5xl md:text-7xl w-full md:max-w-sm border-transparent focus:border-transparent focus:ring-0 text-gray-900 bg-transparent rounded-lg border border-none dark:placeholder-gray-400 dark:text-white"
           placeholder="0.00"
           maxLength="4"
-          required
           value={inputValue.value.to}
           onChange={(e) => handleChange(e.target.value, 'to')}
+          required
         />
       </div>
     </div>
@@ -154,7 +134,6 @@ export async function getStaticProps() {
   const response = { rates: null, symbols: null }
   const exchangeRates = `${process.env.EXCHANGE_RATES_BASE_URL}/latest?apikey=${process.env.EXCHANGE_RATES_TOKEN}`
   const exchangeSymbols = `${process.env.EXCHANGE_RATES_BASE_URL}/symbols?apikey=${process.env.EXCHANGE_RATES_TOKEN}`
-
   const exchangeResponse = await fetch(exchangeRates).then((res) => res.json())
   response.rates = exchangeResponse.rates
 
