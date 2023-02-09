@@ -8,7 +8,7 @@ export default function CurrencyModal({
   handleClick,
 }) {
   const [search, setSearch] = useState('')
-  const [filtered, setFiltered] = useState(exchangeRates)
+  const [filtered, setFiltered] = useState(exchangeRates.value)
 
   useEffect(() => {
     if (search.length > 0) {
